@@ -895,7 +895,7 @@ void LitColumnsApp::BuildMaterials()
 	auto wedgeMat = std::make_unique<Material>();
 	wedgeMat->Name = "wedgeMat";
 	wedgeMat->MatCBIndex = 3;
-	wedgeMat->DiffuseSrvHeapIndex = 5;
+	wedgeMat->DiffuseSrvHeapIndex = 3;
 	wedgeMat->DiffuseAlbedo = XMFLOAT4(.98f, 0.55f, 0.94f, 1.f);
 	wedgeMat->FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);
 	wedgeMat->Roughness = 0.3f;
@@ -935,7 +935,7 @@ void LitColumnsApp::BuildMaterials()
 	auto shineBlue = std::make_unique<Material>();
 	shineBlue->Name = "shineBlue";
 	shineBlue->MatCBIndex = 8;
-	shineBlue->DiffuseSrvHeapIndex = 4;
+	shineBlue->DiffuseSrvHeapIndex = 8;
 	shineBlue->DiffuseAlbedo = XMFLOAT4(Colors::DeepSkyBlue);
 	shineBlue->FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);
 	shineBlue->Roughness = 0.05f;
@@ -943,7 +943,7 @@ void LitColumnsApp::BuildMaterials()
 	auto shineRed = std::make_unique<Material>();
 	shineRed->Name = "shineRed";
 	shineRed->MatCBIndex = 9;
-	shineRed->DiffuseSrvHeapIndex = 6;
+	shineRed->DiffuseSrvHeapIndex = 9;
 	shineRed->DiffuseAlbedo = XMFLOAT4(.85f, .2f, .2f, 1.0f);
 	shineRed->FresnelR0 = XMFLOAT3(0.05f, 0.05f, 0.05f);
 	shineRed->Roughness = 0.05f;
@@ -1168,6 +1168,67 @@ void LitColumnsApp::BuildRenderItems()
 
 		mAllRitems.push_back(std::move(leftCylRitem));
 		mAllRitems.push_back(std::move(rightCylRitem));
+		mAllRitems.push_back(std::move(leftSphereRitem));
+		mAllRitems.push_back(std::move(rightSphereRitem));
+	}
+
+	XMMATRIX hexTransform = XMMatrixScaling(.5f, 1.f, .5f);
+	XMMATRIX coneTransform = XMMatrixScaling(1.4f, 1.4f, 1.4f);
+	objCBIndex = 19;
+	for (int i = 0; i < 2; ++i)
+	{
+		auto leftHexRitem = std::make_unique<RenderItem>();
+		auto righHexRitem = std::make_unique<RenderItem>();
+		auto leftSphereRitem = std::make_unique<RenderItem>();
+		auto rightSphereRitem = std::make_unique<RenderItem>();
+
+		XMMATRIX leftHexWorld = XMMatrixTranslation(-7.0f, 2.f, 1.5f + i * 11.f);
+		XMMATRIX rightHexWorld = XMMatrixTranslation(+7.0f, 2.f, 1.5f + i * 11.f);
+
+		XMMATRIX leftSphereWorld = XMMatrixTranslation(-7.0f, 3.f, 1.5f + i * 11.f);
+		XMMATRIX rightSphereWorld = XMMatrixTranslation(+7.0f, 3.f, 1.5f + i * 11.f);
+
+		XMStoreFloat4x4(&leftHexRitem->World, hexTransform*leftHexWorld);
+		XMStoreFloat4x4(&leftHexRitem->TexTransform, brickTexTransform);
+		leftHexRitem->ObjCBIndex = objCBIndex++;
+		leftHexRitem->Mat = mMaterials["diaMat"].get();
+		leftHexRitem->Geo = mGeometries["shapeGeo"].get();
+		leftHexRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		leftHexRitem->IndexCount = leftHexRitem->Geo->DrawArgs["hexagon"].IndexCount;
+		leftHexRitem->StartIndexLocation = leftHexRitem->Geo->DrawArgs["hexagon"].StartIndexLocation;
+		leftHexRitem->BaseVertexLocation = leftHexRitem->Geo->DrawArgs["hexagon"].BaseVertexLocation;
+
+		XMStoreFloat4x4(&righHexRitem->World, hexTransform*rightHexWorld);
+		XMStoreFloat4x4(&righHexRitem->TexTransform, brickTexTransform);
+		righHexRitem->ObjCBIndex = objCBIndex++;
+		righHexRitem->Mat = mMaterials["diaMat"].get();
+		righHexRitem->Geo = mGeometries["shapeGeo"].get();
+		righHexRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		righHexRitem->IndexCount = righHexRitem->Geo->DrawArgs["hexagon"].IndexCount;
+		righHexRitem->StartIndexLocation = righHexRitem->Geo->DrawArgs["hexagon"].StartIndexLocation;
+		righHexRitem->BaseVertexLocation = righHexRitem->Geo->DrawArgs["hexagon"].BaseVertexLocation;
+
+		XMStoreFloat4x4(&leftSphereRitem->World, leftSphereWorld);
+		leftSphereRitem->ObjCBIndex = objCBIndex++;
+		leftSphereRitem->Mat = mMaterials["gold"].get();
+		leftSphereRitem->Geo = mGeometries["shapeGeo"].get();
+		leftSphereRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		leftSphereRitem->IndexCount = leftSphereRitem->Geo->DrawArgs["cone"].IndexCount;
+		leftSphereRitem->StartIndexLocation = leftSphereRitem->Geo->DrawArgs["cone"].StartIndexLocation;
+		leftSphereRitem->BaseVertexLocation = leftSphereRitem->Geo->DrawArgs["cone"].BaseVertexLocation;
+
+		XMStoreFloat4x4(&rightSphereRitem->World, rightSphereWorld);
+		rightSphereRitem->TexTransform = MathHelper::Identity4x4();
+		rightSphereRitem->ObjCBIndex = objCBIndex++;
+		rightSphereRitem->Mat = mMaterials["gold"].get();
+		rightSphereRitem->Geo = mGeometries["shapeGeo"].get();
+		rightSphereRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		rightSphereRitem->IndexCount = rightSphereRitem->Geo->DrawArgs["cone"].IndexCount;
+		rightSphereRitem->StartIndexLocation = rightSphereRitem->Geo->DrawArgs["cone"].StartIndexLocation;
+		rightSphereRitem->BaseVertexLocation = rightSphereRitem->Geo->DrawArgs["cone"].BaseVertexLocation;
+
+		mAllRitems.push_back(std::move(leftHexRitem));
+		mAllRitems.push_back(std::move(righHexRitem));
 		mAllRitems.push_back(std::move(leftSphereRitem));
 		mAllRitems.push_back(std::move(rightSphereRitem));
 	}
