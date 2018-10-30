@@ -481,7 +481,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateTriangularPrism(float width
 
 GeometryGenerator::MeshData GeometryGenerator::CreateOctahedron(float radius)
 {
-	return CreateSphere(radius, 4.f, 2.f);
+	return CreateSphere(radius, 4, 2);
 }
 
 GeometryGenerator::MeshData GeometryGenerator::CreateStar(float width, float height, float depth)
@@ -501,6 +501,187 @@ GeometryGenerator::MeshData GeometryGenerator::CreateStar(float width, float hei
 
 	return meshData;
 }
+
+GeometryGenerator::MeshData GeometryGenerator::CreateOctagon(float width, float height, uint32 numSubdivisions)
+{
+	MeshData meshData;
+	float pi = 3.141592f;
+	float r = width/2;
+
+	float x = cos((2 * pi) / 8)*r;
+	float y = height/2;
+	float z = sin((2 * pi) / 8)*r;
+
+	XMFLOAT3 pos[16] =
+	{
+		//the top 8 vertices
+		XMFLOAT3(0,y,r),
+		XMFLOAT3(x,y,z),
+		XMFLOAT3(r,y,0),
+		XMFLOAT3(x,y,-z),
+		XMFLOAT3(0,y,-r),
+		XMFLOAT3(-x,y,-z),
+		XMFLOAT3(-r,y,0),
+		XMFLOAT3(-x,y,z),
+
+		//the bottom 8 vertices
+		XMFLOAT3(0,-y,r),
+		XMFLOAT3(x,-y,z),
+		XMFLOAT3(r,-y,0),
+		XMFLOAT3(x,-y,-z),
+		XMFLOAT3(0,-y,-r),
+		XMFLOAT3(-x,-y,-z),
+		XMFLOAT3(-r,-y,0),
+		XMFLOAT3(-x,-y,z),
+	};
+
+	meshData.Vertices.resize(16);
+
+	for (uint32 i = 0; i < 16; ++i)
+		meshData.Vertices[i].Position = pos[i];
+
+	for (uint32 i = 0; i < meshData.Vertices.size(); ++i)
+	{
+		XMVECTOR n = XMVector3Normalize(XMLoadFloat3(&meshData.Vertices[i].Position));
+		XMStoreFloat3(&meshData.Vertices[i].Normal, n);
+	}
+
+	uint32 i[84] = {
+		//the top 6 triangles
+		0, 1, 2,
+		0, 2, 3,
+		0, 3, 4,
+		0, 4, 5,
+		0, 5, 6,
+		0, 6, 7,
+		//the bottom 6 triangles
+		8, 15, 14,
+		8, 14, 13,
+		8, 13, 12,
+		8, 12, 11,
+		8, 11, 10,
+		8, 10, 9,
+		//the side face 1
+		1, 0, 8,
+		1, 8, 9,
+		//the side face 2
+		2, 1, 9,
+		2, 9, 10,
+		//the side face 3
+		3, 2, 10,
+		3, 10, 11,
+		//the side face 4
+		4, 3, 11,
+		4, 11, 12,
+		//the side face 5
+		5, 4, 12,
+		5, 12, 13,
+		//the side face 6
+		6, 5, 13,
+		6, 13, 14,
+		//the side face 7
+		7, 6, 14,
+		7, 14, 15,
+		//the side face 8
+		0, 7, 15,
+		0, 15, 8,
+	};
+
+	meshData.Indices32.assign(&i[0], &i[84]);
+
+	// Put a cap on the number of subdivisions.
+	numSubdivisions = std::min<uint32>(numSubdivisions, 6u);
+
+	for (uint32 i = 0; i < numSubdivisions; ++i)
+		Subdivide(meshData);
+
+	return meshData;
+}
+
+
+GeometryGenerator::MeshData GeometryGenerator::CreateHexagon(float width, float height, uint32 numSubdivisions)
+{
+	MeshData meshData;
+	float pi = 3.141592f;
+	float r = width/2 ;
+
+	float x = cos((2 * pi) / 6)*r;
+	float y = height/2 ;
+	float z = sin((2 * pi) / 6)*r;
+
+	XMFLOAT3 pos[12];
+
+	//the top 6 vertices
+	for (int i = 0; i < 6; i++)
+	{
+		pos[i] =
+		{
+			XMFLOAT3(cos((i * 2 * pi) / 6)*r, y, sin((i * 2 * pi) / 6)*r)
+		};
+	}
+	//the bottom 6 vertices
+	for (int i = 6; i < 12; i++)
+	{
+		pos[i] =
+		{
+			XMFLOAT3(cos((i * 2 * pi) / 6)*r, -y, sin(( i * 2 * pi) / 6)*r)
+		};
+	}
+
+	meshData.Vertices.resize(12);
+
+	for (uint32 i = 0; i < 12; ++i)
+		meshData.Vertices[i].Position = pos[i];
+
+	for (uint32 i = 0; i < meshData.Vertices.size(); ++i)
+	{
+		XMVECTOR n = XMVector3Normalize(XMLoadFloat3(&meshData.Vertices[i].Position));
+		XMStoreFloat3(&meshData.Vertices[i].Normal, n);
+	}
+
+	uint32 i[60] = {
+		//the top 4 triangles
+		0,5,4,
+		0,4,3,
+		0,3,2,
+		0,2,1,
+		//the bottom 4 triangles
+		6,7,8,
+		6,8,9,
+		6,9,10,
+		6,10,11,
+		//the side face 1
+		5, 0, 6, 
+		5, 6, 11,
+		//the side face 2
+		0, 1, 7,
+		0, 7, 6,
+		//the side face 3
+		1, 2, 8,
+		1, 8, 7,
+		//the side face 4
+		2, 3, 9,
+		2, 9, 8,
+		//the side face 5
+		3, 4, 10,
+		3, 10, 9,
+		//the side face 6
+		4, 5, 11,
+		4, 11, 10
+	};
+
+	meshData.Indices32.assign(&i[0], &i[60]);
+
+	// Put a cap on the number of subdivisions.
+	numSubdivisions = std::min<uint32>(numSubdivisions, 6u);
+
+	for (uint32 i = 0; i < numSubdivisions; ++i)
+		Subdivide(meshData);
+
+	return meshData;
+}
+
+
 
 void GeometryGenerator::Subdivide(MeshData& meshData)
 {

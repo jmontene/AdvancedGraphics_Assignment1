@@ -145,6 +145,18 @@ public:
 	///</summary>
 	MeshData CreateStar(float width, float height, float depth);
 
+
+	///<summary>
+	///Create a hexagon
+	///</summary>
+	MeshData CreateHexagon(float width, float height, uint32 numSubdivisions);
+
+	///<summary>
+	///Create a star
+	///</summary>
+	MeshData CreateOctagon(float width, float height, uint32 numSubdivisions);
+
+
 private:
 	void Subdivide(MeshData& meshData);
     Vertex MidPoint(const Vertex& v0, const Vertex& v1);
