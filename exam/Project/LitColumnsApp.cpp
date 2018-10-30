@@ -968,7 +968,7 @@ void LitColumnsApp::BuildRenderItems()
 	FXMVECTOR AxisZ = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
 	auto pyramidRitem = std::make_unique<RenderItem>();
-	XMStoreFloat4x4(&pyramidRitem->World, XMMatrixScaling(1.5f, 1.5f, 1.5f)*XMMatrixTranslation(-1.0f, 0.5f, -3.0f));
+	XMStoreFloat4x4(&pyramidRitem->World, XMMatrixScaling(1.5f, 1.5f, 1.5f)*XMMatrixTranslation(-1.0f, 0.5f, -6.5f));
 	XMStoreFloat4x4(&pyramidRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
 	pyramidRitem->ObjCBIndex = 0;
 	pyramidRitem->Mat = mMaterials["wedgeMat"].get();
@@ -1016,7 +1016,7 @@ void LitColumnsApp::BuildRenderItems()
 	mAllRitems.push_back(std::move(HexagonRitem));
 
 	auto triPrismRitem = std::make_unique<RenderItem>();
-	XMStoreFloat4x4(&triPrismRitem->World, XMMatrixScaling(0.5f, 0.5f, 0.5f)*XMMatrixTranslation(0.0f, 0.5f, -8.0f));
+	XMStoreFloat4x4(&triPrismRitem->World, XMMatrixScaling(1.5f, 1.5f, 2.5f)*XMMatrixTranslation(0.0f, 0.5f, -3.0f));
 	XMStoreFloat4x4(&triPrismRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
 	triPrismRitem->ObjCBIndex = 4;
 	triPrismRitem->Mat = mMaterials["sky"].get();
@@ -1043,7 +1043,7 @@ void LitColumnsApp::BuildRenderItems()
 	XMStoreFloat4x4(&boxRitem->World, XMMatrixScaling(4.5f, 2.0f, 4.5f)*XMMatrixTranslation(0.0f, 0.5f, 6.0f));
 	XMStoreFloat4x4(&boxRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
 	boxRitem->ObjCBIndex = 6;
-	boxRitem->Mat = mMaterials["stone0"].get();
+	boxRitem->Mat = mMaterials["shineRed"].get();
 	boxRitem->Geo = mGeometries["shapeGeo"].get();
 	boxRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	boxRitem->IndexCount = boxRitem->Geo->DrawArgs["box"].IndexCount;
@@ -1076,7 +1076,7 @@ void LitColumnsApp::BuildRenderItems()
 	mAllRitems.push_back(std::move(skullRitem));*/
 
 	auto WedgeRitem = std::make_unique<RenderItem>();
-	XMStoreFloat4x4(&WedgeRitem->World, XMMatrixScaling(.5f, .5f, 3.5f)*XMMatrixRotationAxis(AxisY,XMConvertToRadians(-90))*XMMatrixTranslation(0.0f, .5f, -8.0f));
+	XMStoreFloat4x4(&WedgeRitem->World, XMMatrixScaling(.3f, .4f, 2.5f)*XMMatrixRotationAxis(AxisY,XMConvertToRadians(-90))*XMMatrixTranslation(0.0f, .35f, 2.5f));
 	XMStoreFloat4x4(&WedgeRitem->TexTransform, XMMatrixScaling(1.0f, 1.0f, 1.0f));
 	WedgeRitem->ObjCBIndex = 8;
 	WedgeRitem->Mat = mMaterials["wedgeMat"].get();
@@ -1087,6 +1087,7 @@ void LitColumnsApp::BuildRenderItems()
 	WedgeRitem->BaseVertexLocation = WedgeRitem->Geo->DrawArgs["wedge"].BaseVertexLocation;
 	mAllRitems.push_back(std::move(WedgeRitem));
 
+	//make them to octahedren---
 	auto diamondRitem1 = std::make_unique<RenderItem>();
 	XMStoreFloat4x4(&diamondRitem1->World, XMMatrixScaling(0.5f, 0.5f, 0.5f)* XMMatrixTranslation(-0.7f, 2.7f, -7.7f));
 	diamondRitem1->TexTransform = MathHelper::Identity4x4();
@@ -1110,6 +1111,7 @@ void LitColumnsApp::BuildRenderItems()
 	diamondRitem2->StartIndexLocation = diamondRitem2->Geo->DrawArgs["diamond"].StartIndexLocation;
 	diamondRitem2->BaseVertexLocation = diamondRitem2->Geo->DrawArgs["diamond"].BaseVertexLocation;
 	mAllRitems.push_back(std::move(diamondRitem2));
+	//make them to octahedren---
 
 	XMMATRIX brickTexTransform = XMMatrixScaling(1.0f, 3.0f, 1.0f);
 	XMMATRIX sphereTransform = XMMatrixScaling(1.4f, 1.4f, 1.4f);
@@ -1149,7 +1151,7 @@ void LitColumnsApp::BuildRenderItems()
 
 		XMStoreFloat4x4(&leftSphereRitem->World, sphereTransform*leftSphereWorld);
 		leftSphereRitem->ObjCBIndex = objCBIndex++;
-		leftSphereRitem->Mat = mMaterials["stone0"].get();
+		leftSphereRitem->Mat = mMaterials["gold"].get();
 		leftSphereRitem->Geo = mGeometries["shapeGeo"].get();
 		leftSphereRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		leftSphereRitem->IndexCount = leftSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
@@ -1159,7 +1161,7 @@ void LitColumnsApp::BuildRenderItems()
 		XMStoreFloat4x4(&rightSphereRitem->World, sphereTransform*rightSphereWorld);
 		rightSphereRitem->TexTransform = MathHelper::Identity4x4();
 		rightSphereRitem->ObjCBIndex = objCBIndex++;
-		rightSphereRitem->Mat = mMaterials["stone0"].get();
+		rightSphereRitem->Mat = mMaterials["gold"].get();
 		rightSphereRitem->Geo = mGeometries["shapeGeo"].get();
 		rightSphereRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		rightSphereRitem->IndexCount = rightSphereRitem->Geo->DrawArgs["sphere"].IndexCount;
@@ -1172,8 +1174,8 @@ void LitColumnsApp::BuildRenderItems()
 		mAllRitems.push_back(std::move(rightSphereRitem));
 	}
 
-	XMMATRIX hexTransform = XMMatrixScaling(.5f, 1.f, .5f);
-	XMMATRIX coneTransform = XMMatrixScaling(1.4f, 1.4f, 1.4f);
+	XMMATRIX hexTransform = XMMatrixScaling(.5f, 1.2f, .5f);
+	XMMATRIX coneTransform = XMMatrixScaling(.7f, .7f, .7f);
 	objCBIndex = 19;
 	for (int i = 0; i < 2; ++i)
 	{
@@ -1182,11 +1184,11 @@ void LitColumnsApp::BuildRenderItems()
 		auto leftSphereRitem = std::make_unique<RenderItem>();
 		auto rightSphereRitem = std::make_unique<RenderItem>();
 
-		XMMATRIX leftHexWorld = XMMatrixTranslation(-7.0f, 2.f, 1.5f + i * 11.f);
-		XMMATRIX rightHexWorld = XMMatrixTranslation(+7.0f, 2.f, 1.5f + i * 11.f);
+		XMMATRIX leftHexWorld = XMMatrixTranslation(-7.0f, .6f, 1.5f + i * 11.f);
+		XMMATRIX rightHexWorld = XMMatrixTranslation(+7.0f, .6f, 1.5f + i * 11.f);
 
-		XMMATRIX leftSphereWorld = XMMatrixTranslation(-7.0f, 3.f, 1.5f + i * 11.f);
-		XMMATRIX rightSphereWorld = XMMatrixTranslation(+7.0f, 3.f, 1.5f + i * 11.f);
+		XMMATRIX leftSphereWorld = XMMatrixTranslation(-7.0f, 1.6f, 1.5f + i * 11.f);
+		XMMATRIX rightSphereWorld = XMMatrixTranslation(+7.0f, 1.6f, 1.5f + i * 11.f);
 
 		XMStoreFloat4x4(&leftHexRitem->World, hexTransform*leftHexWorld);
 		XMStoreFloat4x4(&leftHexRitem->TexTransform, brickTexTransform);
@@ -1208,7 +1210,7 @@ void LitColumnsApp::BuildRenderItems()
 		righHexRitem->StartIndexLocation = righHexRitem->Geo->DrawArgs["hexagon"].StartIndexLocation;
 		righHexRitem->BaseVertexLocation = righHexRitem->Geo->DrawArgs["hexagon"].BaseVertexLocation;
 
-		XMStoreFloat4x4(&leftSphereRitem->World, leftSphereWorld);
+		XMStoreFloat4x4(&leftSphereRitem->World, coneTransform*leftSphereWorld);
 		leftSphereRitem->ObjCBIndex = objCBIndex++;
 		leftSphereRitem->Mat = mMaterials["gold"].get();
 		leftSphereRitem->Geo = mGeometries["shapeGeo"].get();
@@ -1217,7 +1219,7 @@ void LitColumnsApp::BuildRenderItems()
 		leftSphereRitem->StartIndexLocation = leftSphereRitem->Geo->DrawArgs["cone"].StartIndexLocation;
 		leftSphereRitem->BaseVertexLocation = leftSphereRitem->Geo->DrawArgs["cone"].BaseVertexLocation;
 
-		XMStoreFloat4x4(&rightSphereRitem->World, rightSphereWorld);
+		XMStoreFloat4x4(&rightSphereRitem->World, coneTransform*rightSphereWorld);
 		rightSphereRitem->TexTransform = MathHelper::Identity4x4();
 		rightSphereRitem->ObjCBIndex = objCBIndex++;
 		rightSphereRitem->Mat = mMaterials["gold"].get();
