@@ -156,6 +156,10 @@ public:
 	///</summary>
 	MeshData CreateOctagon(float width, float height, uint32 numSubdivisions);
 
+	MeshData CreateHexagonContainer(float width, float height, uint32 numSubdivisions);
+
+	MeshData CreateCandy(float width, float height, uint32 numSubdivisions);
+
 
 private:
 	void Subdivide(MeshData& meshData);
